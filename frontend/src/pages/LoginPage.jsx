@@ -23,9 +23,13 @@ export default function LoginPage() {
 
     try {
       const loggedUser = await login(email.trim(), password);
-      if (loggedUser.role === 'admin') navigate('/admin', { replace: true });
-      else if (loggedUser.role === 'teacher') navigate('/teacher', { replace: true });
-      else navigate('/student', { replace: true });
+      if (loggedUser.role === 'admin') {
+        navigate('/admin/groups', { replace: true });
+      } else if (loggedUser.role === 'teacher') {
+        navigate('/teacher/lessons', { replace: true });
+      } else {
+        navigate('/student/check-in', { replace: true });
+      }
     } catch {
       // error already in store
     }

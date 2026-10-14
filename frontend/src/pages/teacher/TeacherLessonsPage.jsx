@@ -35,6 +35,7 @@ export default function TeacherLessonsPage() {
   const [lessons, setLessons] = useState([]);
   const [groups, setGroups] = useState([]);
   const [disciplines, setDisciplines] = useState([]);
+  const [listMode, setListMode] = useState('active');
   const [form, setForm] = useState(emptyForm);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -43,12 +44,12 @@ export default function TeacherLessonsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoadingGeo, setIsLoadingGeo] = useState(false);
 
-  async function loadPageData() {
+  async function loadPageData(mode = listMode) {
     setIsLoading(true);
     setError('');
     try {
       const [lessonsData, groupsData, disciplinesData] = await Promise.all([
-        getLessons(token),
+        getLessons(token, mode === 'archived'),
         getGroups(token),
         getDisciplines(token),
       ]);
@@ -63,8 +64,8 @@ export default function TeacherLessonsPage() {
   }
 
   useEffect(() => {
-    loadPageData();
-  }, [token]);
+    loadPageData(listMode);
+  }, [token, listMode]);
 
   function updateField(field, value) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -309,11 +310,45 @@ export default function TeacherLessonsPage() {
           </p>
         ) : null}
 
-        <div className="mt-6 overflow-hidden rounded-2xl border border-line bg-white">
+        <div className="mt-6 flex gap-2">
+          <button
+            type="button"
+            onClick={() => setListMode('active')}
+            className={[
+              'rounded-lg px-3 py-2 text-sm font-medium',
+              listMode === 'active'
+                ? 'bg-accent text-white'
+                : 'border border-line bg-white text-ink',
+            ].join(' ')}
+          >
+            Активні
+          </button>
+          <button
+            type="button"
+            onClick={() => setListMode('archived')}
+            className={[
+              'rounded-lg px-3 py-2 text-sm font-medium',
+              listMode === 'archived'
+                ? 'bg-accent text-white'
+                : 'border border-line bg-white text-ink',
+            ].join(' ')}
+          >
+            Архів
+          </button>
+        </div>
+        <p className="mt-2 text-xs text-muted">
+          Архів лишається в статистиці. Повне видалення — ні.
+        </p>
+
+        <div className="mt-4 overflow-hidden rounded-2xl border border-line bg-white">
           {isLoading ? (
             <p className="p-4 text-sm text-muted">Завантаження...</p>
           ) : lessons.length === 0 ? (
-            <p className="p-4 text-sm text-muted">Занять ще немає</p>
+            <p className="p-4 text-sm text-muted">
+              {listMode === 'archived'
+                ? 'Архів порожній'
+                : 'Активних занять ще немає'}
+            </p>
           ) : (
             <ul className="divide-y divide-line">
               {lessons.map((lesson) => (
@@ -324,6 +359,11 @@ export default function TeacherLessonsPage() {
                   <div>
                     <p className="font-medium text-ink">
                       {lesson.disciplineName} · {lesson.groupName}
+                      {lesson.isArchived ? (
+                        <span className="ml-2 text-xs font-medium text-muted">
+                          (архів)
+                        </span>
+                      ) : null}
                     </p>
                     <p className="text-sm text-muted">
                       {lesson.lessonDate} · {lesson.startTime.slice(0, 5)}–
@@ -334,7 +374,7 @@ export default function TeacherLessonsPage() {
                     to={`/teacher/lessons/${lesson.id}`}
                     className="rounded-lg border border-line px-3 py-1.5 text-center text-sm font-medium text-ink hover:bg-surface"
                   >
-                    QR і присутність
+                    Відкрити
                   </Link>
                 </li>
               ))}

@@ -51,7 +51,7 @@ export const useAuthStore = create((set, get) => ({
     } catch (error) {
       set({
         isLoading: false,
-        error: error.message || 'Login failed',
+        error: error.message || 'Не вдалося увійти',
       });
       throw error;
     }
@@ -66,9 +66,9 @@ export const useAuthStore = create((set, get) => ({
   homePathByRole() {
     const role = get().user?.role;
 
-    if (role === 'admin') return '/admin';
-    if (role === 'teacher') return '/teacher';
-    if (role === 'student') return '/student';
+    if (role === 'admin') return '/admin/groups';
+    if (role === 'teacher') return '/teacher/lessons';
+    if (role === 'student') return '/student/check-in';
     return '/login';
   },
 }));

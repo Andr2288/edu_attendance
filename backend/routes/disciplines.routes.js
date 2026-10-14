@@ -34,7 +34,7 @@ router.get(
       console.error(error);
       return res.status(500).json({
         ok: false,
-        message: 'Failed to load disciplines',
+        message: 'Не вдалося завантажити дисципліни',
       });
     }
   }
@@ -50,7 +50,7 @@ router.post(
     if (!name) {
       return res.status(400).json({
         ok: false,
-        message: 'Discipline name is required',
+        message: 'Потрібна назва дисципліни',
       });
     }
 
@@ -73,13 +73,13 @@ router.post(
       if (error.code === 'ER_DUP_ENTRY') {
         return res.status(409).json({
           ok: false,
-          message: 'Discipline with this name already exists',
+          message: 'Дисципліна з такою назвою вже існує',
         });
       }
       console.error(error);
       return res.status(500).json({
         ok: false,
-        message: 'Failed to create discipline',
+        message: 'Не вдалося створити дисципліну',
       });
     }
   }
@@ -96,14 +96,14 @@ router.put(
     if (!Number.isInteger(id) || id <= 0) {
       return res.status(400).json({
         ok: false,
-        message: 'Invalid discipline id',
+        message: 'Невірний id дисципліни',
       });
     }
 
     if (!name) {
       return res.status(400).json({
         ok: false,
-        message: 'Discipline name is required',
+        message: 'Потрібна назва дисципліни',
       });
     }
 
@@ -116,7 +116,7 @@ router.put(
       if (result.affectedRows === 0) {
         return res.status(404).json({
           ok: false,
-          message: 'Discipline not found',
+          message: 'Дисципліну не знайдено',
         });
       }
 
@@ -133,13 +133,96 @@ router.put(
       if (error.code === 'ER_DUP_ENTRY') {
         return res.status(409).json({
           ok: false,
-          message: 'Discipline with this name already exists',
+          message: 'Дисципліна з такою назвою вже існує',
         });
       }
       console.error(error);
       return res.status(500).json({
         ok: false,
-        message: 'Failed to update discipline',
+        message: 'Не вдалося оновити дисципліну',
+      });
+    }
+  }
+);
+
+router.delete(
+  '/disciplines/:id',
+  requireAuth,
+  requireRole('admin'),
+  async (req, res) => {
+    const id = Number(req.params.id);
+
+    if (!Number.isInteger(id) || id <= 0) {
+      return res.status(400).json({
+        ok: false,
+        message: 'Невірний id дисципліни',
+      });
+    }
+
+    try {
+      const [blockingLessons] = await pool.query(
+        `SELECT
+           l.id,
+           l.lesson_date,
+           l.location_name,
+           l.is_archived,
+           u.full_name AS teacher_name
+         FROM lessons l
+         JOIN users u ON u.id = l.teacher_id
+         WHERE l.discipline_id = ?
+         ORDER BY l.id`,
+        [id]
+      );
+
+      if (blockingLessons.length > 0) {
+        const details = blockingLessons
+          .map((lesson) => {
+            const archived = Number(lesson.is_archived) === 1 ? ', архів' : '';
+            return `#${lesson.id} (${lesson.lesson_date}, ${lesson.teacher_name}${archived})`;
+          })
+          .join('; ');
+
+        return res.status(409).json({
+          ok: false,
+          message: `Неможливо видалити дисципліну. Повʼязані заняття: ${details}`,
+          blockingLessons: blockingLessons.map((lesson) => ({
+            id: lesson.id,
+            lessonDate: lesson.lesson_date,
+            locationName: lesson.location_name,
+            isArchived: Boolean(lesson.is_archived),
+            teacherName: lesson.teacher_name,
+          })),
+        });
+      }
+
+      const [result] = await pool.query(
+        `DELETE FROM disciplines WHERE id = ?`,
+        [id]
+      );
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({
+          ok: false,
+          message: 'Дисципліну не знайдено',
+        });
+      }
+
+      return res.json({
+        ok: true,
+        message: 'Дисципліну видалено',
+      });
+    } catch (error) {
+      if (error.code === 'ER_ROW_IS_REFERENCED_2') {
+        return res.status(409).json({
+          ok: false,
+          message:
+            'Неможливо видалити дисципліну: вона використовується в заняттях',
+        });
+      }
+      console.error(error);
+      return res.status(500).json({
+        ok: false,
+        message: 'Не вдалося видалити дисципліну',
       });
     }
   }

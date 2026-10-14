@@ -20,6 +20,13 @@ export function updateGroup(token, id, name) {
   });
 }
 
+export function deleteGroup(token, id) {
+  return apiRequest(`/groups/${id}`, {
+    method: 'DELETE',
+    token,
+  });
+}
+
 export function getDisciplines(token) {
   return apiRequest('/disciplines', { token });
 }
@@ -37,6 +44,13 @@ export function updateDiscipline(token, id, name) {
     method: 'PUT',
     token,
     body: { name },
+  });
+}
+
+export function deleteDiscipline(token, id) {
+  return apiRequest(`/disciplines/${id}`, {
+    method: 'DELETE',
+    token,
   });
 }
 

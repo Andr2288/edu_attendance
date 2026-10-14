@@ -3,6 +3,7 @@ import AppShell from '../../components/AppShell';
 import { useAuthStore } from '../../store/authStore';
 import {
   createDiscipline,
+  deleteDiscipline,
   getDisciplines,
   updateDiscipline,
 } from '../../api/adminApi';
@@ -45,6 +46,25 @@ export default function DisciplinesPage() {
   function resetForm() {
     setEditId(null);
     setName('');
+  }
+
+  async function handleDelete(discipline) {
+    const confirmed = window.confirm(
+      `Видалити дисципліну "${discipline.name}"?`
+    );
+    if (!confirmed) return;
+
+    setError('');
+    setSuccess('');
+
+    try {
+      await deleteDiscipline(token, discipline.id);
+      setSuccess('Дисципліну видалено');
+      if (editId === discipline.id) resetForm();
+      await loadDisciplines();
+    } catch (err) {
+      setError(err.message);
+    }
   }
 
   async function handleSubmit(event) {
@@ -136,13 +156,22 @@ export default function DisciplinesPage() {
                     <p className="font-medium text-ink">{discipline.name}</p>
                     <p className="text-xs text-muted">id: {discipline.id}</p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => startEdit(discipline)}
-                    className="rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink hover:bg-surface"
-                  >
-                    Редагувати
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => startEdit(discipline)}
+                      className="rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink hover:bg-surface"
+                    >
+                      Редагувати
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(discipline)}
+                      className="rounded-lg border border-red-200 px-3 py-1.5 text-sm font-medium text-danger hover:bg-red-50"
+                    >
+                      Видалити
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>

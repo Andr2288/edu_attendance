@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 import AppShell from '../../components/AppShell';
 import { useAuthStore } from '../../store/authStore';
-import { createGroup, getGroups, updateGroup } from '../../api/adminApi';
+import {
+  createGroup,
+  deleteGroup,
+  getGroups,
+  updateGroup,
+} from '../../api/adminApi';
 import { adminNavItems } from './adminNav';
 
 export default function GroupsPage() {
@@ -41,6 +46,23 @@ export default function GroupsPage() {
   function resetForm() {
     setEditId(null);
     setName('');
+  }
+
+  async function handleDelete(group) {
+    const confirmed = window.confirm(`Видалити групу "${group.name}"?`);
+    if (!confirmed) return;
+
+    setError('');
+    setSuccess('');
+
+    try {
+      await deleteGroup(token, group.id);
+      setSuccess('Групу видалено');
+      if (editId === group.id) resetForm();
+      await loadGroups();
+    } catch (err) {
+      setError(err.message);
+    }
   }
 
   async function handleSubmit(event) {
@@ -132,13 +154,22 @@ export default function GroupsPage() {
                     <p className="font-medium text-ink">{group.name}</p>
                     <p className="text-xs text-muted">id: {group.id}</p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => startEdit(group)}
-                    className="rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink hover:bg-surface"
-                  >
-                    Редагувати
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => startEdit(group)}
+                      className="rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink hover:bg-surface"
+                    >
+                      Редагувати
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(group)}
+                      className="rounded-lg border border-red-200 px-3 py-1.5 text-sm font-medium text-danger hover:bg-red-50"
+                    >
+                      Видалити
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>

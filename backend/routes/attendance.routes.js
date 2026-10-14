@@ -39,14 +39,14 @@ router.post(
     if (!qrToken) {
       return res.status(400).json({
         ok: false,
-        message: 'QR code is required',
+        message: 'Потрібен QR-код',
       });
     }
 
     if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
       return res.status(400).json({
         ok: false,
-        message: 'latitude and longitude are required',
+        message: 'Потрібні широта і довгота',
       });
     }
 
@@ -62,7 +62,7 @@ router.post(
       if (studentRows.length === 0) {
         return res.status(404).json({
           ok: false,
-          message: 'Student not found',
+          message: 'Студента не знайдено',
         });
       }
 
@@ -71,14 +71,14 @@ router.post(
       if (!student.group_id) {
         return res.status(400).json({
           ok: false,
-          message: 'Student has no group assigned',
+          message: 'Студенту не призначено групу',
         });
       }
 
       const [lessonRows] = await pool.query(
         `SELECT
            id, group_id, latitude, longitude, radius_meters,
-           lesson_date, location_name
+           lesson_date, location_name, is_archived
          FROM lessons
          WHERE qr_token = ?
          LIMIT 1`,
@@ -88,16 +88,23 @@ router.post(
       if (lessonRows.length === 0) {
         return res.status(404).json({
           ok: false,
-          message: 'Invalid QR code for lesson',
+          message: 'Невірний QR-код заняття',
         });
       }
 
       const lesson = lessonRows[0];
 
+      if (Number(lesson.is_archived) === 1) {
+        return res.status(403).json({
+          ok: false,
+          message: 'Це заняття в архіві',
+        });
+      }
+
       if (Number(lesson.group_id) !== Number(student.group_id)) {
         return res.status(403).json({
           ok: false,
-          message: 'This lesson is for another group',
+          message: 'Це заняття для іншої групи',
         });
       }
 
@@ -111,7 +118,7 @@ router.post(
       if (existingRows.length > 0) {
         return res.status(409).json({
           ok: false,
-          message: 'Attendance already registered for this lesson',
+          message: 'Присутність на цьому занятті вже зареєстровано',
         });
       }
 
@@ -126,7 +133,7 @@ router.post(
       if (!geoCheck.ok) {
         return res.status(403).json({
           ok: false,
-          message: 'You are too far from the lesson location',
+          message: 'Ви занадто далеко від місця заняття',
           distanceMeters: Math.round(geoCheck.distanceMeters),
           allowedRadiusMeters: geoCheck.allowedRadiusMeters,
         });
@@ -157,20 +164,20 @@ router.post(
 
       return res.status(201).json({
         ok: true,
-        message: 'Attendance registered successfully',
+        message: 'Присутність успішно зареєстровано',
         attendance: toAttendance(rows[0]),
       });
     } catch (error) {
       if (error.code === 'ER_DUP_ENTRY') {
         return res.status(409).json({
           ok: false,
-          message: 'Attendance already registered for this lesson',
+          message: 'Присутність на цьому занятті вже зареєстровано',
         });
       }
       console.error(error);
       return res.status(500).json({
         ok: false,
-        message: 'Failed to register attendance',
+        message: 'Не вдалося зареєструвати присутність',
       });
     }
   }
@@ -208,7 +215,7 @@ router.get(
       console.error(error);
       return res.status(500).json({
         ok: false,
-        message: 'Failed to load attendance history',
+        message: 'Не вдалося завантажити історію відвідувань',
       });
     }
   }
@@ -224,7 +231,7 @@ router.get(
     if (!Number.isInteger(lessonId) || lessonId <= 0) {
       return res.status(400).json({
         ok: false,
-        message: 'Invalid lesson id',
+        message: 'Невірний id заняття',
       });
     }
 
@@ -237,14 +244,14 @@ router.get(
       if (lessonRows.length === 0) {
         return res.status(404).json({
           ok: false,
-          message: 'Lesson not found',
+          message: 'Заняття не знайдено',
         });
       }
 
       if (Number(lessonRows[0].teacher_id) !== Number(req.user.id)) {
         return res.status(403).json({
           ok: false,
-          message: 'Access denied for this lesson',
+          message: 'Немає доступу до цього заняття',
         });
       }
 
@@ -269,7 +276,7 @@ router.get(
       console.error(error);
       return res.status(500).json({
         ok: false,
-        message: 'Failed to load lesson attendances',
+        message: 'Не вдалося завантажити список присутніх',
       });
     }
   }
@@ -280,9 +287,36 @@ router.get(
   requireAuth,
   requireRole('teacher'),
   async (req, res) => {
+    const disciplineIdRaw = req.query.disciplineId;
+    const disciplineId =
+      disciplineIdRaw === undefined || disciplineIdRaw === ''
+        ? null
+        : Number(disciplineIdRaw);
+
+    if (
+      disciplineIdRaw !== undefined &&
+      disciplineIdRaw !== '' &&
+      (!Number.isInteger(disciplineId) || disciplineId <= 0)
+    ) {
+      return res.status(400).json({
+        ok: false,
+        message: 'Невірний id дисципліни',
+      });
+    }
+
     try {
+      const params = [req.user.id];
+      let disciplineFilter = '';
+
+      if (disciplineId !== null) {
+        disciplineFilter = ' AND l.discipline_id = ?';
+        params.push(disciplineId);
+      }
+
       const [rows] = await pool.query(
         `SELECT
+           d.id AS discipline_id,
+           d.name AS discipline_name,
            u.id AS student_id,
            u.full_name AS student_name,
            u.email AS student_email,
@@ -291,14 +325,18 @@ router.get(
            COUNT(DISTINCT l.id) AS total_lessons,
            COUNT(DISTINCT a.id) AS present_count
          FROM lessons l
+         JOIN disciplines d ON d.id = l.discipline_id
          JOIN study_groups g ON g.id = l.group_id
          JOIN users u ON u.group_id = l.group_id AND u.role = 'student'
          LEFT JOIN attendances a
            ON a.lesson_id = l.id AND a.student_id = u.id
-         WHERE l.teacher_id = ?
-         GROUP BY u.id, u.full_name, u.email, g.id, g.name
-         ORDER BY g.name, u.full_name`,
-        [req.user.id]
+         WHERE l.teacher_id = ?${disciplineFilter}
+         GROUP BY
+           d.id, d.name,
+           u.id, u.full_name, u.email,
+           g.id, g.name
+         ORDER BY d.name, g.name, u.full_name`,
+        params
       );
 
       const stats = rows.map((row) => {
@@ -310,6 +348,8 @@ router.get(
             : Math.round((presentCount / totalLessons) * 100);
 
         return {
+          disciplineId: row.discipline_id,
+          disciplineName: row.discipline_name,
           studentId: row.student_id,
           studentName: row.student_name,
           studentEmail: row.student_email,
@@ -329,7 +369,7 @@ router.get(
       console.error(error);
       return res.status(500).json({
         ok: false,
-        message: 'Failed to load attendance stats',
+        message: 'Не вдалося завантажити статистику',
       });
     }
   }

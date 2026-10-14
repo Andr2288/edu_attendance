@@ -1,15 +1,12 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
-import AdminHomePage from './pages/admin/AdminHomePage';
 import GroupsPage from './pages/admin/GroupsPage';
 import DisciplinesPage from './pages/admin/DisciplinesPage';
 import UsersPage from './pages/admin/UsersPage';
-import TeacherHomePage from './pages/teacher/TeacherHomePage';
 import TeacherLessonsPage from './pages/teacher/TeacherLessonsPage';
 import TeacherLessonDetailPage from './pages/teacher/TeacherLessonDetailPage';
 import TeacherStatsPage from './pages/teacher/TeacherStatsPage';
-import StudentHomePage from './pages/student/StudentHomePage';
 import StudentCheckInPage from './pages/student/StudentCheckInPage';
 import StudentHistoryPage from './pages/student/StudentHistoryPage';
 import { useAuthStore } from './store/authStore';
@@ -46,11 +43,7 @@ export default function App() {
 
         <Route
           path="/admin"
-          element={
-            <AdminRoute>
-              <AdminHomePage />
-            </AdminRoute>
-          }
+          element={<Navigate to="/admin/groups" replace />}
         />
         <Route
           path="/admin/groups"
@@ -79,11 +72,7 @@ export default function App() {
 
         <Route
           path="/teacher"
-          element={
-            <TeacherRoute>
-              <TeacherHomePage />
-            </TeacherRoute>
-          }
+          element={<Navigate to="/teacher/lessons" replace />}
         />
         <Route
           path="/teacher/lessons"
@@ -112,11 +101,7 @@ export default function App() {
 
         <Route
           path="/student"
-          element={
-            <StudentRoute>
-              <StudentHomePage />
-            </StudentRoute>
-          }
+          element={<Navigate to="/student/check-in" replace />}
         />
         <Route
           path="/student/check-in"

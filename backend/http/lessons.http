@@ -14,22 +14,17 @@ Content-Type: application/json
   client.global.set("authToken", response.body.token);
 %}
 
-### List groups (for lesson form)
-GET {{baseUrl}}/groups
+### List active lessons
+GET {{baseUrl}}/lessons?archived=0
 Authorization: Bearer {{authToken}}
 Accept: application/json
 
-### List disciplines (for lesson form)
-GET {{baseUrl}}/disciplines
+### List archived lessons
+GET {{baseUrl}}/lessons?archived=1
 Authorization: Bearer {{authToken}}
 Accept: application/json
 
-### List my lessons
-GET {{baseUrl}}/lessons
-Authorization: Bearer {{authToken}}
-Accept: application/json
-
-### Create lesson (+ auto QR token)
+### Create lesson
 # @name createLesson
 POST {{baseUrl}}/lessons
 Authorization: Bearer {{authToken}}
@@ -51,12 +46,31 @@ Content-Type: application/json
   client.global.set("lessonId", response.body.lesson.id);
 %}
 
-### Get lesson by id
-GET {{baseUrl}}/lessons/{{lessonId}}
+### Update lesson
+PUT {{baseUrl}}/lessons/{{lessonId}}
 Authorization: Bearer {{authToken}}
-Accept: application/json
+Content-Type: application/json
 
-### Get QR token for lesson
-GET {{baseUrl}}/lessons/{{lessonId}}/qr
+{
+  "disciplineId": 1,
+  "groupId": 1,
+  "lessonDate": "2026-10-21",
+  "startTime": "10:00",
+  "endTime": "11:20",
+  "locationName": "Аудиторія 302",
+  "latitude": 50.4501,
+  "longitude": 30.5234,
+  "radiusMeters": 120
+}
+
+### Archive lesson (залишається в статистиці)
+POST {{baseUrl}}/lessons/{{lessonId}}/archive
 Authorization: Bearer {{authToken}}
-Accept: application/json
+
+### Unarchive lesson
+POST {{baseUrl}}/lessons/{{lessonId}}/unarchive
+Authorization: Bearer {{authToken}}
+
+### Delete lesson forever (прибирає зі статистики)
+DELETE {{baseUrl}}/lessons/{{lessonId}}
+Authorization: Bearer {{authToken}}

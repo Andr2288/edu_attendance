@@ -59,6 +59,7 @@ CREATE TABLE lessons (
   longitude DECIMAL(10, 7) NOT NULL,
   radius_meters INT UNSIGNED NOT NULL DEFAULT 100,
   qr_token VARCHAR(64) NOT NULL,
+  is_archived TINYINT(1) NOT NULL DEFAULT 0,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY uq_lessons_qr_token (qr_token),
@@ -66,6 +67,7 @@ CREATE TABLE lessons (
   KEY idx_lessons_group_id (group_id),
   KEY idx_lessons_discipline_id (discipline_id),
   KEY idx_lessons_date (lesson_date),
+  KEY idx_lessons_archived (is_archived),
   CONSTRAINT fk_lessons_discipline
     FOREIGN KEY (discipline_id) REFERENCES disciplines (id)
     ON UPDATE CASCADE
