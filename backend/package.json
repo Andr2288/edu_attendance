@@ -1,0 +1,20 @@
+{
+  "name": "@project/backend",
+  "version": "1.0.0",
+  "description": "Edu attendance API (QR + geolocation)",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node index.js",
+    "db:setup": "node db_setup.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "express": "^5.3.0",
+    "mysql2": "^3.24.5"
+  }
+}

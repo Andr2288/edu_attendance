@@ -1,0 +1,25 @@
+.idea
+
+# Project exclude paths
+/backend/node_modules/
+/backend/node_modules/@types/node/LICENSE
+/backend/node_modules/@types/node/README.md
+/backend/node_modules/@types/node/test/
+/backend/node_modules/aws-ssl-profiles/lib/@types/profiles.js
+/backend/node_modules/aws-ssl-profiles/lib/index.js
+/backend/node_modules/aws-ssl-profiles/lib/profiles/ca/defaults.js
+/backend/node_modules/aws-ssl-profiles/lib/profiles/ca/proxies.js
+/backend/node_modules/aws-ssl-profiles/LICENSE
+/backend/node_modules/aws-ssl-profiles/README.md
+/backend/node_modules/iconv-lite/
+/backend/node_modules/long/index.js
+/backend/node_modules/long/LICENSE
+/backend/node_modules/long/README.md
+/backend/node_modules/long/umd/index.js
+/backend/node_modules/lru.min/
+/backend/node_modules/mysql2/
+/backend/node_modules/mysql2/typings/mysql/info.txt
+/backend/node_modules/mysql2/typings/mysql/LICENSE.txt
+/backend/node_modules/sql-escaper/
+/backend/node_modules/undici-types/LICENSE
+/backend/node_modules/undici-types/README.md
