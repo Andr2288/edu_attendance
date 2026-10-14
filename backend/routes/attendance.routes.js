@@ -1,6 +1,6 @@
 const express = require('express');
 const { pool } = require('../db/pool');
-const { distanceMeters } = require('../utils/geo');
+const { isWithinRadius } = require('../utils/geo');
 const {
   requireAuth,
   requireRole,
@@ -115,19 +115,20 @@ router.post(
         });
       }
 
-      const distance = distanceMeters(
+      const geoCheck = isWithinRadius(
         Number(lesson.latitude),
         Number(lesson.longitude),
         latitude,
-        longitude
+        longitude,
+        Number(lesson.radius_meters)
       );
 
-      if (distance > Number(lesson.radius_meters)) {
+      if (!geoCheck.ok) {
         return res.status(403).json({
           ok: false,
           message: 'You are too far from the lesson location',
-          distanceMeters: Math.round(distance),
-          allowedRadiusMeters: Number(lesson.radius_meters),
+          distanceMeters: Math.round(geoCheck.distanceMeters),
+          allowedRadiusMeters: geoCheck.allowedRadiusMeters,
         });
       }
 

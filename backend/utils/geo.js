@@ -17,6 +17,31 @@ function distanceMeters(lat1, lon1, lat2, lon2) {
   return 2 * earthRadiusMeters * Math.asin(Math.sqrt(a));
 }
 
+/**
+ * Чи студент у дозволеному радіусі від місця заняття.
+ */
+function isWithinRadius(
+  lessonLat,
+  lessonLon,
+  studentLat,
+  studentLon,
+  radiusMeters
+) {
+  const distance = distanceMeters(
+    lessonLat,
+    lessonLon,
+    studentLat,
+    studentLon
+  );
+
+  return {
+    ok: distance <= Number(radiusMeters),
+    distanceMeters: distance,
+    allowedRadiusMeters: Number(radiusMeters),
+  };
+}
+
 module.exports = {
   distanceMeters,
+  isWithinRadius,
 };
