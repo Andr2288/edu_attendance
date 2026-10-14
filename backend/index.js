@@ -6,6 +6,7 @@ const authRoutes = require('./routes/auth.routes');
 const groupsRoutes = require('./routes/groups.routes');
 const disciplinesRoutes = require('./routes/disciplines.routes');
 const usersRoutes = require('./routes/users.routes');
+const lessonsRoutes = require('./routes/lessons.routes');
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(API_PREFIX, authRoutes);
 app.use(API_PREFIX, groupsRoutes);
 app.use(API_PREFIX, disciplinesRoutes);
 app.use(API_PREFIX, usersRoutes);
+app.use(API_PREFIX, lessonsRoutes);
 
 app.use((req, res) => {
   res.status(404).json({

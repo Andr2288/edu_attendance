@@ -18,7 +18,7 @@ function toDiscipline(row) {
 router.get(
   '/disciplines',
   requireAuth,
-  requireRole('admin'),
+  requireRole('admin', 'teacher'),
   async (_req, res) => {
     try {
       const [rows] = await pool.query(

@@ -1,0 +1,62 @@
+@baseUrl = http://localhost:5000/api
+
+### Login as teacher
+# @name loginTeacher
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "teacher1@edu.local",
+  "password": "password123"
+}
+
+> {%
+  client.global.set("authToken", response.body.token);
+%}
+
+### List groups (for lesson form)
+GET {{baseUrl}}/groups
+Authorization: Bearer {{authToken}}
+Accept: application/json
+
+### List disciplines (for lesson form)
+GET {{baseUrl}}/disciplines
+Authorization: Bearer {{authToken}}
+Accept: application/json
+
+### List my lessons
+GET {{baseUrl}}/lessons
+Authorization: Bearer {{authToken}}
+Accept: application/json
+
+### Create lesson (+ auto QR token)
+# @name createLesson
+POST {{baseUrl}}/lessons
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "disciplineId": 1,
+  "groupId": 1,
+  "lessonDate": "2026-10-20",
+  "startTime": "09:00",
+  "endTime": "10:20",
+  "locationName": "Аудиторія 301",
+  "latitude": 50.4501,
+  "longitude": 30.5234,
+  "radiusMeters": 100
+}
+
+> {%
+  client.global.set("lessonId", response.body.lesson.id);
+%}
+
+### Get lesson by id
+GET {{baseUrl}}/lessons/{{lessonId}}
+Authorization: Bearer {{authToken}}
+Accept: application/json
+
+### Get QR token for lesson
+GET {{baseUrl}}/lessons/{{lessonId}}/qr
+Authorization: Bearer {{authToken}}
+Accept: application/json
