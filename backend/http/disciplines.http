@@ -1,0 +1,38 @@
+@baseUrl = http://localhost:5000/api
+
+### Login as admin (get token)
+# @name loginAdmin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@edu.local",
+  "password": "password123"
+}
+
+> {%
+  client.global.set("authToken", response.body.token);
+%}
+
+### List disciplines
+GET {{baseUrl}}/disciplines
+Authorization: Bearer {{authToken}}
+Accept: application/json
+
+### Create discipline
+POST {{baseUrl}}/disciplines
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Комп'ютерні мережі"
+}
+
+### Update discipline (заміни id на потрібний)
+PUT {{baseUrl}}/disciplines/1
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Програмування (оновлено)"
+}

@@ -1,0 +1,73 @@
+@baseUrl = http://localhost:5000/api
+
+### Login as admin (get token)
+# @name loginAdmin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@edu.local",
+  "password": "password123"
+}
+
+> {%
+  client.global.set("authToken", response.body.token);
+%}
+
+### List users
+GET {{baseUrl}}/users
+Authorization: Bearer {{authToken}}
+Accept: application/json
+
+### Get user by id
+GET {{baseUrl}}/users/4
+Authorization: Bearer {{authToken}}
+Accept: application/json
+
+### Create teacher
+POST {{baseUrl}}/users
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "email": "teacher3@edu.local",
+  "password": "password123",
+  "fullName": "Сергій Новий",
+  "role": "teacher",
+  "groupId": null
+}
+
+### Create student
+# @name createStudent
+POST {{baseUrl}}/users
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "email": "student3@edu.local",
+  "password": "password123",
+  "fullName": "Оксана Тестова",
+  "role": "student",
+  "groupId": 1
+}
+
+> {%
+  client.global.set("createdUserId", response.body.user.id);
+%}
+
+### Update user (заміни id або використай createdUserId після Create student)
+PUT {{baseUrl}}/users/{{createdUserId}}
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "email": "student3@edu.local",
+  "fullName": "Оксана Тестова (оновлено)",
+  "role": "student",
+  "groupId": 2
+}
+
+### Delete user (не видаляй сідових teacher з заняттями — буде 409)
+DELETE {{baseUrl}}/users/{{createdUserId}}
+Authorization: Bearer {{authToken}}
+Accept: application/json

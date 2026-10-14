@@ -3,6 +3,9 @@ const cors = require('cors');
 const { PORT, API_PREFIX } = require('./config/app.constants');
 const healthRoutes = require('./routes/health.routes');
 const authRoutes = require('./routes/auth.routes');
+const groupsRoutes = require('./routes/groups.routes');
+const disciplinesRoutes = require('./routes/disciplines.routes');
+const usersRoutes = require('./routes/users.routes');
 
 const app = express();
 
@@ -11,6 +14,9 @@ app.use(express.json());
 
 app.use(API_PREFIX, healthRoutes);
 app.use(API_PREFIX, authRoutes);
+app.use(API_PREFIX, groupsRoutes);
+app.use(API_PREFIX, disciplinesRoutes);
+app.use(API_PREFIX, usersRoutes);
 
 app.use((req, res) => {
   res.status(404).json({

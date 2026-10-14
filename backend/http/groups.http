@@ -1,0 +1,38 @@
+@baseUrl = http://localhost:5000/api
+
+### Login as admin (get token)
+# @name loginAdmin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@edu.local",
+  "password": "password123"
+}
+
+> {%
+  client.global.set("authToken", response.body.token);
+%}
+
+### List groups
+GET {{baseUrl}}/groups
+Authorization: Bearer {{authToken}}
+Accept: application/json
+
+### Create group
+POST {{baseUrl}}/groups
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "КН-23"
+}
+
+### Update group (заміни id на потрібний)
+PUT {{baseUrl}}/groups/1
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "КН-21-оновлена"
+}
