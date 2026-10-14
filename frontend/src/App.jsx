@@ -6,6 +6,9 @@ import GroupsPage from './pages/admin/GroupsPage';
 import DisciplinesPage from './pages/admin/DisciplinesPage';
 import UsersPage from './pages/admin/UsersPage';
 import TeacherHomePage from './pages/teacher/TeacherHomePage';
+import TeacherLessonsPage from './pages/teacher/TeacherLessonsPage';
+import TeacherLessonDetailPage from './pages/teacher/TeacherLessonDetailPage';
+import TeacherStatsPage from './pages/teacher/TeacherStatsPage';
 import StudentHomePage from './pages/student/StudentHomePage';
 import { useAuthStore } from './store/authStore';
 
@@ -23,6 +26,10 @@ function HomeRedirect() {
 
 function AdminRoute({ children }) {
   return <ProtectedRoute roles={['admin']}>{children}</ProtectedRoute>;
+}
+
+function TeacherRoute({ children }) {
+  return <ProtectedRoute roles={['teacher']}>{children}</ProtectedRoute>;
 }
 
 export default function App() {
@@ -67,9 +74,33 @@ export default function App() {
         <Route
           path="/teacher"
           element={
-            <ProtectedRoute roles={['teacher']}>
+            <TeacherRoute>
               <TeacherHomePage />
-            </ProtectedRoute>
+            </TeacherRoute>
+          }
+        />
+        <Route
+          path="/teacher/lessons"
+          element={
+            <TeacherRoute>
+              <TeacherLessonsPage />
+            </TeacherRoute>
+          }
+        />
+        <Route
+          path="/teacher/lessons/:id"
+          element={
+            <TeacherRoute>
+              <TeacherLessonDetailPage />
+            </TeacherRoute>
+          }
+        />
+        <Route
+          path="/teacher/stats"
+          element={
+            <TeacherRoute>
+              <TeacherStatsPage />
+            </TeacherRoute>
           }
         />
 
