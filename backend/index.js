@@ -25,7 +25,7 @@ app.use(API_PREFIX, attendanceRoutes);
 app.use((req, res) => {
   res.status(404).json({
     ok: false,
-    message: `Route not found: ${req.method} ${req.originalUrl}`,
+    message: `Маршрут не знайдено: ${req.method} ${req.originalUrl}`,
   });
 });
 
@@ -33,7 +33,7 @@ app.use((error, _req, res, _next) => {
   console.error(error);
   res.status(500).json({
     ok: false,
-    message: 'Internal server error',
+    message: 'Внутрішня помилка сервера',
   });
 });
 

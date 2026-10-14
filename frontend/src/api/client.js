@@ -26,7 +26,7 @@ export async function apiRequest(path, options = {}) {
   }
 
   if (!response.ok) {
-    const error = new Error(data?.message || 'Request failed');
+    const error = new Error(data?.message || 'Помилка запиту');
     error.status = response.status;
     error.data = data;
     throw error;

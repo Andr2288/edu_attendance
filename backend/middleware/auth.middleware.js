@@ -7,7 +7,7 @@ function requireAuth(req, res, next) {
   if (!header || !header.startsWith('Bearer ')) {
     return res.status(401).json({
       ok: false,
-      message: 'Authorization token is required',
+      message: 'Потрібен токен авторизації',
     });
   }
 
@@ -26,7 +26,7 @@ function requireAuth(req, res, next) {
   } catch (_error) {
     return res.status(401).json({
       ok: false,
-      message: 'Invalid or expired token',
+      message: 'Недійсний або прострочений токен',
     });
   }
 }
@@ -36,14 +36,14 @@ function requireRole(...roles) {
     if (!req.user) {
       return res.status(401).json({
         ok: false,
-        message: 'Authorization token is required',
+        message: 'Потрібен токен авторизації',
       });
     }
 
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({
         ok: false,
-        message: 'Access denied for this role',
+        message: 'Немає доступу для цієї ролі',
       });
     }
 

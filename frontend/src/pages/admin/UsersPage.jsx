@@ -156,6 +156,47 @@ export default function UsersPage() {
     return group ? group.name : `id ${groupId}`;
   }
 
+  const roleSections = [
+    { role: 'admin', title: 'Адміністратори' },
+    { role: 'teacher', title: 'Викладачі' },
+    { role: 'student', title: 'Студенти' },
+  ];
+
+  function renderUserRow(user) {
+    return (
+      <li
+        key={user.id}
+        className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div>
+          <p className="font-medium text-ink">{user.fullName}</p>
+          <p className="text-sm text-muted">
+            {user.email}
+            {user.role === 'student'
+              ? ` · група: ${groupNameById(user.groupId)}`
+              : ''}
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => startEdit(user)}
+            className="rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink hover:bg-surface"
+          >
+            Редагувати
+          </button>
+          <button
+            type="button"
+            onClick={() => handleDelete(user)}
+            className="rounded-lg border border-red-200 px-3 py-1.5 text-sm font-medium text-danger hover:bg-red-50"
+          >
+            Видалити
+          </button>
+        </div>
+      </li>
+    );
+  }
+
   return (
     <AppShell title="Панель адміністратора" navItems={adminNavItems}>
       <section>
@@ -261,44 +302,44 @@ export default function UsersPage() {
           </p>
         ) : null}
 
-        <div className="mt-6 overflow-hidden rounded-2xl border border-line bg-white">
+        <div className="mt-6 space-y-4">
           {isLoading ? (
-            <p className="p-4 text-sm text-muted">Завантаження...</p>
+            <div className="rounded-2xl border border-line bg-white p-4 text-sm text-muted">
+              Завантаження...
+            </div>
           ) : users.length === 0 ? (
-            <p className="p-4 text-sm text-muted">Користувачів ще немає</p>
+            <div className="rounded-2xl border border-line bg-white p-4 text-sm text-muted">
+              Користувачів ще немає
+            </div>
           ) : (
-            <ul className="divide-y divide-line">
-              {users.map((user) => (
-                <li
-                  key={user.id}
-                  className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+            roleSections.map((section) => {
+              const sectionUsers = users.filter(
+                (user) => user.role === section.role
+              );
+
+              return (
+                <div
+                  key={section.role}
+                  className="overflow-hidden rounded-2xl border border-line bg-white"
                 >
-                  <div>
-                    <p className="font-medium text-ink">{user.fullName}</p>
-                    <p className="text-sm text-muted">
-                      {user.email} · {user.role} · група:{' '}
-                      {groupNameById(user.groupId)}
-                    </p>
+                  <div className="border-b border-line px-4 py-3">
+                    <h2 className="font-semibold text-ink">
+                      {section.title}
+                      <span className="ml-2 text-sm font-normal text-muted">
+                        ({sectionUsers.length})
+                      </span>
+                    </h2>
                   </div>
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => startEdit(user)}
-                      className="rounded-lg border border-line px-3 py-1.5 text-sm font-medium text-ink hover:bg-surface"
-                    >
-                      Редагувати
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(user)}
-                      className="rounded-lg border border-red-200 px-3 py-1.5 text-sm font-medium text-danger hover:bg-red-50"
-                    >
-                      Видалити
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                  {sectionUsers.length === 0 ? (
+                    <p className="p-4 text-sm text-muted">Порожньо</p>
+                  ) : (
+                    <ul className="divide-y divide-line">
+                      {sectionUsers.map((user) => renderUserRow(user))}
+                    </ul>
+                  )}
+                </div>
+              );
+            })
           )}
         </div>
       </section>

@@ -41,7 +41,7 @@ router.post('/auth/login', async (req, res) => {
   if (!email || !password) {
     return res.status(400).json({
       ok: false,
-      message: 'Email and password are required',
+      message: 'Потрібні email і пароль',
     });
   }
 
@@ -57,7 +57,7 @@ router.post('/auth/login', async (req, res) => {
     if (rows.length === 0) {
       return res.status(401).json({
         ok: false,
-        message: 'Invalid email or password',
+        message: 'Невірний email або пароль',
       });
     }
 
@@ -70,7 +70,7 @@ router.post('/auth/login', async (req, res) => {
     if (!passwordMatches) {
       return res.status(401).json({
         ok: false,
-        message: 'Invalid email or password',
+        message: 'Невірний email або пароль',
       });
     }
 
@@ -86,7 +86,7 @@ router.post('/auth/login', async (req, res) => {
     console.error(error);
     return res.status(500).json({
       ok: false,
-      message: 'Login failed',
+      message: 'Не вдалося увійти',
     });
   }
 });
@@ -104,7 +104,7 @@ router.get('/auth/me', requireAuth, async (req, res) => {
     if (rows.length === 0) {
       return res.status(404).json({
         ok: false,
-        message: 'User not found',
+        message: 'Користувача не знайдено',
       });
     }
 
@@ -116,7 +116,7 @@ router.get('/auth/me', requireAuth, async (req, res) => {
     console.error(error);
     return res.status(500).json({
       ok: false,
-      message: 'Failed to load current user',
+      message: 'Не вдалося завантажити поточного користувача',
     });
   }
 });

@@ -94,7 +94,7 @@ GET {{baseUrl}}/lessons/{{lessonId}}/attendances
 Authorization: Bearer {{teacherToken}}
 Accept: application/json
 
-### Teacher: attendance stats
-GET {{baseUrl}}/attendance/stats
+### Teacher: attendance stats by discipline
+GET {{baseUrl}}/attendance/stats?disciplineId=1
 Authorization: Bearer {{teacherToken}}
 Accept: application/json

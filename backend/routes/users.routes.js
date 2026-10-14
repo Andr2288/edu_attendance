@@ -44,37 +44,37 @@ function validateUserPayload(body, { requirePassword }) {
 
   if (!email || !fullName || !role) {
     return {
-      error: 'Email, fullName and role are required',
+      error: 'Потрібні email, ПІБ і роль',
     };
   }
 
   if (!ALLOWED_ROLES.includes(role)) {
     return {
-      error: 'Role must be admin, teacher or student',
+      error: 'Роль має бути admin, teacher або student',
     };
   }
 
   if (requirePassword && !password) {
     return {
-      error: 'Password is required',
+      error: 'Потрібен пароль',
     };
   }
 
   if (password && password.length < 6) {
     return {
-      error: 'Password must be at least 6 characters',
+      error: 'Пароль має містити щонайменше 6 символів',
     };
   }
 
   if (role === 'student') {
     if (!Number.isInteger(groupId) || groupId <= 0) {
       return {
-        error: 'Student must have a valid groupId',
+        error: 'Для студента потрібна коректна група',
       };
     }
   } else if (groupId !== null) {
     return {
-      error: 'Only students can have a groupId',
+      error: 'Групу можна вказувати лише для студентів',
     };
   }
 
@@ -103,7 +103,7 @@ router.get(
       console.error(error);
       return res.status(500).json({
         ok: false,
-        message: 'Failed to load users',
+        message: 'Не вдалося завантажити користувачів',
       });
     }
   }
@@ -119,7 +119,7 @@ router.get(
     if (!Number.isInteger(id) || id <= 0) {
       return res.status(400).json({
         ok: false,
-        message: 'Invalid user id',
+        message: 'Невірний id користувача',
       });
     }
 
@@ -135,7 +135,7 @@ router.get(
       if (rows.length === 0) {
         return res.status(404).json({
           ok: false,
-          message: 'User not found',
+          message: 'Користувача не знайдено',
         });
       }
 
@@ -144,7 +144,7 @@ router.get(
       console.error(error);
       return res.status(500).json({
         ok: false,
-        message: 'Failed to load user',
+        message: 'Не вдалося завантажити користувача',
       });
     }
   }
@@ -170,7 +170,7 @@ router.post(
         if (!exists) {
           return res.status(400).json({
             ok: false,
-            message: 'Group not found',
+            message: 'Групу не знайдено',
           });
         }
       }
@@ -203,13 +203,13 @@ router.post(
       if (error.code === 'ER_DUP_ENTRY') {
         return res.status(409).json({
           ok: false,
-          message: 'User with this email already exists',
+          message: 'Користувач з таким email вже існує',
         });
       }
       console.error(error);
       return res.status(500).json({
         ok: false,
-        message: 'Failed to create user',
+        message: 'Не вдалося створити користувача',
       });
     }
   }
@@ -225,7 +225,7 @@ router.put(
     if (!Number.isInteger(id) || id <= 0) {
       return res.status(400).json({
         ok: false,
-        message: 'Invalid user id',
+        message: 'Невірний id користувача',
       });
     }
 
@@ -247,7 +247,7 @@ router.put(
       if (existingRows.length === 0) {
         return res.status(404).json({
           ok: false,
-          message: 'User not found',
+          message: 'Користувача не знайдено',
         });
       }
 
@@ -256,7 +256,7 @@ router.put(
         if (!exists) {
           return res.status(400).json({
             ok: false,
-            message: 'Group not found',
+            message: 'Групу не знайдено',
           });
         }
       }
@@ -306,13 +306,13 @@ router.put(
       if (error.code === 'ER_DUP_ENTRY') {
         return res.status(409).json({
           ok: false,
-          message: 'User with this email already exists',
+          message: 'Користувач з таким email вже існує',
         });
       }
       console.error(error);
       return res.status(500).json({
         ok: false,
-        message: 'Failed to update user',
+        message: 'Не вдалося оновити користувача',
       });
     }
   }
@@ -328,14 +328,14 @@ router.delete(
     if (!Number.isInteger(id) || id <= 0) {
       return res.status(400).json({
         ok: false,
-        message: 'Invalid user id',
+        message: 'Невірний id користувача',
       });
     }
 
     if (req.user.id === id) {
       return res.status(400).json({
         ok: false,
-        message: 'You cannot delete your own account',
+        message: 'Не можна видалити власний акаунт',
       });
     }
 
@@ -348,25 +348,25 @@ router.delete(
       if (result.affectedRows === 0) {
         return res.status(404).json({
           ok: false,
-          message: 'User not found',
+          message: 'Користувача не знайдено',
         });
       }
 
       return res.json({
         ok: true,
-        message: 'User deleted',
+        message: 'Користувача видалено',
       });
     } catch (error) {
       if (error.code === 'ER_ROW_IS_REFERENCED_2') {
         return res.status(409).json({
           ok: false,
-          message: 'User cannot be deleted because related records exist',
+          message: 'Неможливо видалити користувача: є повʼязані записи',
         });
       }
       console.error(error);
       return res.status(500).json({
         ok: false,
-        message: 'Failed to delete user',
+        message: 'Не вдалося видалити користувача',
       });
     }
   }
