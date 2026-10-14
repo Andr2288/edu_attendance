@@ -1,0 +1,100 @@
+@baseUrl = http://localhost:5000/api
+
+### 1) Teacher login + create lesson
+# @name loginTeacher
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "teacher1@edu.local",
+  "password": "password123"
+}
+
+> {%
+  client.global.set("teacherToken", response.body.token);
+%}
+
+### Create lesson for group КН-21
+# @name createLesson
+POST {{baseUrl}}/lessons
+Authorization: Bearer {{teacherToken}}
+Content-Type: application/json
+
+{
+  "disciplineId": 1,
+  "groupId": 1,
+  "lessonDate": "2026-10-21",
+  "startTime": "11:00",
+  "endTime": "12:20",
+  "locationName": "Аудиторія 301",
+  "latitude": 50.4501,
+  "longitude": 30.5234,
+  "radiusMeters": 100
+}
+
+> {%
+  client.global.set("lessonId", response.body.lesson.id);
+  client.global.set("qrToken", response.body.lesson.qrToken);
+%}
+
+### 2) Student login
+# @name loginStudent
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "student1@edu.local",
+  "password": "password123"
+}
+
+> {%
+  client.global.set("studentToken", response.body.token);
+%}
+
+### Check-in too far (очікуємо 403)
+POST {{baseUrl}}/attendance/check-in
+Authorization: Bearer {{studentToken}}
+Content-Type: application/json
+
+{
+  "qrToken": "{{qrToken}}",
+  "latitude": 50.4600,
+  "longitude": 30.5400
+}
+
+### Check-in OK (поруч з аудиторією)
+POST {{baseUrl}}/attendance/check-in
+Authorization: Bearer {{studentToken}}
+Content-Type: application/json
+
+{
+  "qrToken": "{{qrToken}}",
+  "latitude": 50.45015,
+  "longitude": 30.52345
+}
+
+### Check-in again (очікуємо 409)
+POST {{baseUrl}}/attendance/check-in
+Authorization: Bearer {{studentToken}}
+Content-Type: application/json
+
+{
+  "qrToken": "{{qrToken}}",
+  "latitude": 50.45015,
+  "longitude": 30.52345
+}
+
+### Student attendance history
+GET {{baseUrl}}/attendance/me
+Authorization: Bearer {{studentToken}}
+Accept: application/json
+
+### 3) Teacher: list attendances for lesson
+GET {{baseUrl}}/lessons/{{lessonId}}/attendances
+Authorization: Bearer {{teacherToken}}
+Accept: application/json
+
+### Teacher: attendance stats
+GET {{baseUrl}}/attendance/stats
+Authorization: Bearer {{teacherToken}}
+Accept: application/json
