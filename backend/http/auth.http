@@ -1,0 +1,57 @@
+@baseUrl = http://localhost:5000/api
+
+### Login — Admin
+# @name loginAdmin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@edu.local",
+  "password": "password123"
+}
+
+> {%
+  client.global.set("authToken", response.body.token);
+%}
+
+### Login — Teacher
+# @name loginTeacher
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "teacher1@edu.local",
+  "password": "password123"
+}
+
+> {%
+  client.global.set("authToken", response.body.token);
+%}
+
+### Login — Student
+# @name loginStudent
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "student1@edu.local",
+  "password": "password123"
+}
+
+> {%
+  client.global.set("authToken", response.body.token);
+%}
+
+### Current user (потрібен токен з логіну вище)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{authToken}}
+Accept: application/json
+
+### Login — wrong password (очікуємо 401)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@edu.local",
+  "password": "wrong-password"
+}

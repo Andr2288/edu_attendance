@@ -1,0 +1,4 @@
+### Health check (сервер + MySQL)
+@baseUrl = http://localhost:5000/api
+GET {{baseUrl}}/health
+Accept: application/json
