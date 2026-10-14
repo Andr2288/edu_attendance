@@ -2,6 +2,9 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import AdminHomePage from './pages/admin/AdminHomePage';
+import GroupsPage from './pages/admin/GroupsPage';
+import DisciplinesPage from './pages/admin/DisciplinesPage';
+import UsersPage from './pages/admin/UsersPage';
 import TeacherHomePage from './pages/teacher/TeacherHomePage';
 import StudentHomePage from './pages/student/StudentHomePage';
 import { useAuthStore } from './store/authStore';
@@ -18,6 +21,10 @@ function HomeRedirect() {
   return <Navigate to={homePathByRole()} replace />;
 }
 
+function AdminRoute({ children }) {
+  return <ProtectedRoute roles={['admin']}>{children}</ProtectedRoute>;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -27,9 +34,33 @@ export default function App() {
         <Route
           path="/admin"
           element={
-            <ProtectedRoute roles={['admin']}>
+            <AdminRoute>
               <AdminHomePage />
-            </ProtectedRoute>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/groups"
+          element={
+            <AdminRoute>
+              <GroupsPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/disciplines"
+          element={
+            <AdminRoute>
+              <DisciplinesPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <AdminRoute>
+              <UsersPage />
+            </AdminRoute>
           }
         />
 
