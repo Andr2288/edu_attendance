@@ -105,15 +105,13 @@ export default function StudentCheckInPage() {
       );
 
       setScannerActive(true);
-      setScannerStatus('Камера увімкнена. Наведіть на QR-код.');
+      setScannerStatus('Камера увімкнена');
       setScannerError('');
     } catch {
       scannerRef.current = null;
       setScannerActive(false);
       setScannerStatus('');
-      setScannerError(
-        'Камера недоступна або доступ заборонено. Можна вставити QR-токен вручну.'
-      );
+      setScannerError('Камера недоступна або доступ заборонено');
     } finally {
       setIsStartingCamera(false);
     }
@@ -127,9 +125,7 @@ export default function StudentCheckInPage() {
       if (scanner.isScanning) {
         await scanner.stop();
       }
-    } catch {
-      // ignore stop errors
-    }
+    } catch {}
 
     scannerRef.current = null;
     setScannerActive(false);
@@ -143,13 +139,13 @@ export default function StudentCheckInPage() {
 
     if (!finalToken) {
       setIsError(true);
-      setMessage('QR-токен обовʼязковий');
+      setMessage('Вкажіть QR-код');
       return;
     }
 
     if (!coords) {
       setIsError(true);
-      setMessage('Спочатку надайте доступ до геолокації');
+      setMessage('Потрібна геолокація');
       return;
     }
 
@@ -186,9 +182,6 @@ export default function StudentCheckInPage() {
     <AppShell title="Кабінет студента" navItems={studentNavItems}>
       <section>
         <h1 className="text-2xl font-semibold text-ink">Відмітка присутності</h1>
-        <p className="mt-2 text-muted">
-          Спочатку надайте доступи кнопками нижче, потім підтвердіть присутність
-        </p>
 
         {!isSecureContext() ? (
           <p className="mt-4 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
@@ -199,9 +192,6 @@ export default function StudentCheckInPage() {
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
           <div className="rounded-2xl border border-line bg-white p-5">
             <h2 className="text-lg font-semibold text-ink">Геолокація</h2>
-            <p className="mt-1 text-sm text-muted">
-              Потрібна, щоб перевірити, що ви в аудиторії
-            </p>
 
             <button
               type="button"
@@ -232,18 +222,11 @@ export default function StudentCheckInPage() {
                 <br />
                 Довгота: {coords.longitude.toFixed(6)}
               </p>
-            ) : (
-              <p className="mt-3 text-sm text-muted">
-                Геолокацію ще не отримано
-              </p>
-            )}
+            ) : null}
           </div>
 
           <div className="rounded-2xl border border-line bg-white p-5">
-            <h2 className="text-lg font-semibold text-ink">Камера / QR</h2>
-            <p className="mt-1 text-sm text-muted">
-              Увімкніть камеру, щоб просканувати QR з дошки
-            </p>
+            <h2 className="text-lg font-semibold text-ink">Камера</h2>
 
             <div className="mt-4 flex flex-wrap gap-2">
               {!scannerActive ? (
@@ -286,12 +269,11 @@ export default function StudentCheckInPage() {
           className="mt-6 rounded-2xl border border-line bg-white p-5"
         >
           <label className="block text-sm font-medium text-ink">
-            QR-токен
+            QR-код
             <input
               value={qrToken}
               onChange={(event) => setQrToken(event.target.value)}
               className="mt-2 w-full rounded-lg border border-line px-3 py-2.5 outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
-              placeholder="Зʼявиться після скану або вставте вручну"
             />
           </label>
 

@@ -83,9 +83,6 @@ export default function TeacherStatsPage() {
     <AppShell title="Панель викладача" navItems={teacherNavItems}>
       <section>
         <h1 className="text-2xl font-semibold text-ink">Статистика</h1>
-        <p className="mt-2 text-muted">
-          Відвідуваність студентів по конкретній дисципліні
-        </p>
 
         <label className="mt-6 block max-w-md text-sm font-medium text-ink">
           Дисципліна
@@ -116,22 +113,15 @@ export default function TeacherStatsPage() {
           {selectedDisciplineName ? (
             <div className="border-b border-line px-4 py-3">
               <h2 className="font-semibold text-ink">{selectedDisciplineName}</h2>
-              <p className="text-sm text-muted">
-                Скільки разів студент був / скільки занять з цієї дисципліни
-              </p>
             </div>
           ) : null}
 
           {isLoading ? (
             <p className="p-4 text-sm text-muted">Завантаження...</p>
           ) : !disciplineId ? (
-            <p className="p-4 text-sm text-muted">
-              Створіть заняття, щоб зʼявилась статистика по предмету
-            </p>
+            <p className="p-4 text-sm text-muted">Немає даних</p>
           ) : stats.length === 0 ? (
-            <p className="p-4 text-sm text-muted">
-              Поки немає даних для цієї дисципліни
-            </p>
+            <p className="p-4 text-sm text-muted">Немає даних</p>
           ) : (
             <ul className="divide-y divide-line">
               {stats.map((item) => (

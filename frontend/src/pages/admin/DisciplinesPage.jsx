@@ -94,7 +94,6 @@ export default function DisciplinesPage() {
     <AppShell title="Панель адміністратора" navItems={adminNavItems}>
       <section>
         <h1 className="text-2xl font-semibold text-ink">Дисципліни</h1>
-        <p className="mt-2 text-muted">Додавання та редагування дисциплін</p>
 
         <form
           onSubmit={handleSubmit}
@@ -107,7 +106,6 @@ export default function DisciplinesPage() {
               onChange={(event) => setName(event.target.value)}
               required
               className="mt-2 w-full rounded-lg border border-line px-3 py-2.5 outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
-              placeholder="Наприклад, Комп'ютерні мережі"
             />
           </label>
 
@@ -152,10 +150,7 @@ export default function DisciplinesPage() {
                   key={discipline.id}
                   className="flex items-center justify-between gap-3 px-4 py-3"
                 >
-                  <div>
-                    <p className="font-medium text-ink">{discipline.name}</p>
-                    <p className="text-xs text-muted">id: {discipline.id}</p>
-                  </div>
+                  <p className="font-medium text-ink">{discipline.name}</p>
                   <div className="flex gap-2">
                     <button
                       type="button"

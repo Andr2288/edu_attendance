@@ -1,6 +1,12 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 
+const roleLabels = {
+  admin: 'Адміністратор',
+  teacher: 'Викладач',
+  student: 'Студент',
+};
+
 export default function AppShell({ title, navItems = [], children }) {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
@@ -24,7 +30,9 @@ export default function AppShell({ title, navItems = [], children }) {
             <div className="flex items-center gap-3">
               <div className="text-right">
                 <p className="text-sm font-medium text-ink">{user?.fullName}</p>
-                <p className="text-xs text-muted">{user?.role}</p>
+                <p className="text-xs text-muted">
+                  {roleLabels[user?.role] || user?.role}
+                </p>
               </div>
               <button
                 type="button"

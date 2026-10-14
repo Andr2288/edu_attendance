@@ -92,7 +92,6 @@ export default function GroupsPage() {
     <AppShell title="Панель адміністратора" navItems={adminNavItems}>
       <section>
         <h1 className="text-2xl font-semibold text-ink">Групи</h1>
-        <p className="mt-2 text-muted">Створення та редагування навчальних груп</p>
 
         <form
           onSubmit={handleSubmit}
@@ -105,7 +104,6 @@ export default function GroupsPage() {
               onChange={(event) => setName(event.target.value)}
               required
               className="mt-2 w-full rounded-lg border border-line px-3 py-2.5 outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
-              placeholder="Наприклад, КН-24"
             />
           </label>
 
@@ -150,10 +148,7 @@ export default function GroupsPage() {
                   key={group.id}
                   className="flex items-center justify-between gap-3 px-4 py-3"
                 >
-                  <div>
-                    <p className="font-medium text-ink">{group.name}</p>
-                    <p className="text-xs text-muted">id: {group.id}</p>
-                  </div>
+                  <p className="font-medium text-ink">{group.name}</p>
                   <div className="flex gap-2">
                     <button
                       type="button"

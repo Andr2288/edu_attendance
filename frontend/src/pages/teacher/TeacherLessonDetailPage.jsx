@@ -106,7 +106,7 @@ export default function TeacherLessonDetailPage() {
     try {
       const data = await archiveLesson(token, id);
       setLesson(data.lesson);
-      setSuccess('Заняття в архіві (статистика зберігається)');
+      setSuccess('Заняття в архіві');
     } catch (err) {
       setError(err.message);
     }
@@ -126,7 +126,7 @@ export default function TeacherLessonDetailPage() {
 
   async function handleDelete() {
     const confirmed = window.confirm(
-      'Видалити заняття повністю? Це також прибере відмітки і більше не впливатиме на статистику.'
+      'Видалити заняття назавжди разом із усіма відмітками?'
     );
     if (!confirmed) return;
 
@@ -214,17 +214,12 @@ export default function TeacherLessonDetailPage() {
             <div className="mt-6 grid gap-6 lg:grid-cols-[280px_1fr]">
               <div className="rounded-2xl border border-line bg-white p-5 text-center">
                 <h2 className="text-lg font-semibold text-ink">QR-код заняття</h2>
-                <p className="mt-1 text-sm text-muted">
-                  {lesson.isArchived
-                    ? 'Архівне заняття — нові відмітки недоступні'
-                    : 'Покажіть студентам для відмітки присутності'}
-                </p>
+                {lesson.isArchived ? (
+                  <p className="mt-1 text-sm text-muted">В архіві</p>
+                ) : null}
                 <div className="mt-4 flex justify-center">
                   <QRCodeSVG value={lesson.qrToken} size={200} />
                 </div>
-                <p className="mt-4 break-all text-xs text-muted">
-                  {lesson.qrToken}
-                </p>
               </div>
 
               <div className="rounded-2xl border border-line bg-white">

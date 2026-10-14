@@ -1,6 +1,3 @@
-/**
- * Константи додатку (сервер).
- */
 module.exports = {
   PORT: Number(process.env.PORT) || 5000,
   API_PREFIX: '/api',

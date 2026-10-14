@@ -1,7 +1,4 @@
--- Тестові дані (MVP) — по 5 записів у кожній таблиці
--- Пароль для всіх користувачів: password123
--- bcrypt hash: $2b$10$IzeSnJulCS8vLZZXu0CoxuhpUdga8lEmjENN.jHTImpxnFuCt5pUC
-
+-- password123
 SET NAMES utf8mb4;
 
 INSERT INTO study_groups (id, name) VALUES
@@ -25,7 +22,6 @@ INSERT INTO disciplines (id, name) VALUES
   (4, 'Операційні системи'),
   (5, 'Алгоритми та структури даних');
 
--- Координати: орієнтир — центр Києва (для тестової геолокації)
 INSERT INTO lessons (
   id, discipline_id, group_id, teacher_id,
   lesson_date, start_time, end_time,

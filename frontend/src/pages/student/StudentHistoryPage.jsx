@@ -31,7 +31,6 @@ export default function StudentHistoryPage() {
     <AppShell title="Кабінет студента" navItems={studentNavItems}>
       <section>
         <h1 className="text-2xl font-semibold text-ink">Історія відвідувань</h1>
-        <p className="mt-2 text-muted">Ваші підтверджені присутності</p>
 
         {error ? (
           <p className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-danger">

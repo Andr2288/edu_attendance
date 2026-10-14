@@ -11,8 +11,8 @@ export default function LoginPage() {
   const error = useAuthStore((state) => state.error);
   const homePathByRole = useAuthStore((state) => state.homePathByRole);
 
-  const [email, setEmail] = useState('admin@edu.local');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   if (token && user) {
     return <Navigate to={homePathByRole()} replace />;
@@ -30,9 +30,7 @@ export default function LoginPage() {
       } else {
         navigate('/student/check-in', { replace: true });
       }
-    } catch {
-      // error already in store
-    }
+    } catch {}
   }
 
   return (
@@ -51,8 +49,7 @@ export default function LoginPage() {
           onSubmit={handleSubmit}
           className="rounded-2xl border border-line bg-white p-6 shadow-sm sm:p-8"
         >
-          <h1 className="text-xl font-semibold text-ink">Увійти в систему</h1>
-          <p className="mt-1 text-sm text-muted">Використайте свій email і пароль</p>
+          <h1 className="text-xl font-semibold text-ink">Увійти</h1>
 
           <label className="mt-6 block text-sm font-medium text-ink">
             Email
@@ -91,11 +88,6 @@ export default function LoginPage() {
           >
             {isLoading ? 'Вхід...' : 'Увійти'}
           </button>
-
-          <p className="mt-4 text-xs leading-relaxed text-muted">
-            Тест: admin@edu.local / teacher1@edu.local / student1@edu.local —
-            пароль password123
-          </p>
         </form>
       </div>
     </div>

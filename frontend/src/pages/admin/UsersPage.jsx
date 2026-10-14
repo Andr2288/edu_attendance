@@ -201,9 +201,6 @@ export default function UsersPage() {
     <AppShell title="Панель адміністратора" navItems={adminNavItems}>
       <section>
         <h1 className="text-2xl font-semibold text-ink">Користувачі</h1>
-        <p className="mt-2 text-muted">
-          Додавання, редагування та видалення акаунтів
-        </p>
 
         <form
           onSubmit={handleSubmit}
@@ -237,14 +234,14 @@ export default function UsersPage() {
               onChange={(event) => updateField('role', event.target.value)}
               className="mt-2 w-full rounded-lg border border-line px-3 py-2.5 outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
             >
-              <option value="admin">admin</option>
-              <option value="teacher">teacher</option>
-              <option value="student">student</option>
+              <option value="admin">Адміністратор</option>
+              <option value="teacher">Викладач</option>
+              <option value="student">Студент</option>
             </select>
           </label>
 
           <label className="block text-sm font-medium text-ink">
-            Пароль {editId ? '(якщо треба змінити)' : ''}
+            {editId ? 'Новий пароль' : 'Пароль'}
             <input
               type="password"
               value={form.password}

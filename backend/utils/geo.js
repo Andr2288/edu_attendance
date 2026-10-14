@@ -1,6 +1,3 @@
-/**
- * Відстань між двома точками в метрах (формула гаверсинуса).
- */
 function distanceMeters(lat1, lon1, lat2, lon2) {
   const earthRadiusMeters = 6371000;
   const toRadians = (degrees) => (degrees * Math.PI) / 180;
@@ -17,9 +14,6 @@ function distanceMeters(lat1, lon1, lat2, lon2) {
   return 2 * earthRadiusMeters * Math.asin(Math.sqrt(a));
 }
 
-/**
- * Чи студент у дозволеному радіусі від місця заняття.
- */
 function isWithinRadius(
   lessonLat,
   lessonLon,

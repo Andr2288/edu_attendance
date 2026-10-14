@@ -92,7 +92,7 @@ export default function TeacherLessonsPage() {
           latitude: String(position.coords.latitude),
           longitude: String(position.coords.longitude),
         }));
-        setGeoMessage('Координати аудиторії підставлені з вашого місця');
+        setGeoMessage('Координати підставлено');
         setIsLoadingGeo(false);
       },
       (error) => {
@@ -126,7 +126,7 @@ export default function TeacherLessonsPage() {
         radiusMeters: Number(form.radiusMeters),
       });
 
-      setSuccess('Заняття створено. QR-код уже згенеровано.');
+      setSuccess('Заняття створено');
       setForm({
         ...emptyForm,
         lessonDate: todayDate(),
@@ -146,10 +146,6 @@ export default function TeacherLessonsPage() {
     <AppShell title="Панель викладача" navItems={teacherNavItems}>
       <section>
         <h1 className="text-2xl font-semibold text-ink">Заняття</h1>
-        <p className="mt-2 text-muted">
-          Створіть заняття в аудиторії, підставте свої координати й покажіть
-          QR студентам
-        </p>
 
         <form
           onSubmit={handleSubmit}
@@ -232,27 +228,18 @@ export default function TeacherLessonsPage() {
             />
           </label>
 
-          <div className="sm:col-span-2 rounded-xl border border-line bg-surface/70 p-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="text-sm font-medium text-ink">
-                  Координати місця заняття
-                </p>
-                <p className="mt-1 text-xs text-muted">
-                  Натисніть кнопку в аудиторії — підставляться ваші координати
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={fillMyCoordinates}
-                disabled={isLoadingGeo}
-                className="rounded-lg border border-line bg-white px-3 py-2 text-sm font-medium text-ink hover:bg-white disabled:opacity-60"
-              >
-                {isLoadingGeo ? 'Визначаємо...' : 'Взяти мої координати'}
-              </button>
-            </div>
+          <div className="sm:col-span-2 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-surface/70 p-4">
+            <p className="text-sm font-medium text-ink">Координати місця заняття</p>
+            <button
+              type="button"
+              onClick={fillMyCoordinates}
+              disabled={isLoadingGeo}
+              className="rounded-lg border border-line bg-white px-3 py-2 text-sm font-medium text-ink hover:bg-white disabled:opacity-60"
+            >
+              {isLoadingGeo ? 'Визначаємо...' : 'Взяти мої координати'}
+            </button>
             {geoMessage ? (
-              <p className="mt-3 text-sm text-muted">{geoMessage}</p>
+              <p className="w-full text-sm text-muted">{geoMessage}</p>
             ) : null}
           </div>
 
@@ -262,7 +249,6 @@ export default function TeacherLessonsPage() {
               value={form.latitude}
               onChange={(event) => updateField('latitude', event.target.value)}
               required
-              placeholder="Натисніть «Взяти мої координати»"
               className="mt-2 w-full rounded-lg border border-line px-3 py-2.5 outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
             />
           </label>
@@ -273,7 +259,6 @@ export default function TeacherLessonsPage() {
               value={form.longitude}
               onChange={(event) => updateField('longitude', event.target.value)}
               required
-              placeholder="Натисніть «Взяти мої координати»"
               className="mt-2 w-full rounded-lg border border-line px-3 py-2.5 outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
             />
           </label>
@@ -336,9 +321,6 @@ export default function TeacherLessonsPage() {
             Архів
           </button>
         </div>
-        <p className="mt-2 text-xs text-muted">
-          Архів лишається в статистиці. Повне видалення — ні.
-        </p>
 
         <div className="mt-4 overflow-hidden rounded-2xl border border-line bg-white">
           {isLoading ? (

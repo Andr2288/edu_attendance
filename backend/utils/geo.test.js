@@ -9,15 +9,12 @@ describe('distanceMeters', () => {
   });
 
   it('returns a small distance for nearby points (~10 m)', () => {
-    // ~0.00009 deg latitude ≈ 10 meters
     const distance = distanceMeters(48.74, 25.39, 48.74009, 25.39);
     assert.ok(distance > 8);
     assert.ok(distance < 12);
   });
 
   it('returns large distance for lesson vs phone from real case', () => {
-    // Lesson: 48.74, 25.39
-    // Phone:  48.525441, 25.403025
     const distance = distanceMeters(
       48.74,
       25.39,
@@ -25,7 +22,6 @@ describe('distanceMeters', () => {
       25.403025
     );
 
-    // ~24 km apart
     assert.ok(distance > 20000);
     assert.ok(distance < 30000);
   });
@@ -74,7 +70,6 @@ describe('isWithinRadius', () => {
   });
 
   it('blocks when distance is just above radius', () => {
-    // ~150 m north of lesson point
     const result = isWithinRadius(
       48.74,
       25.39,
